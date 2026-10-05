@@ -11,7 +11,7 @@
 
 <p align="center">
   <a href="https://github.com/mikhail-angelov/vadic-/actions/workflows/ci.yml"><img src="https://github.com/mikhail-angelov/vadic-/actions/workflows/ci.yml/badge.svg" alt="build"></a>
-  <a href="https://github.com/mikhail-angelov/vadic-/releases/latest"><img src="https://img.shields.io/github/v/release/mikhail-angelov/vadic" alt="latest release"></a>
+  <a href="https://github.com/mikhail-angelov/vadic-/releases/latest"><img src="https://img.shields.io/github/v/release/mikhail-angelov/vadic-" alt="latest release"></a>
   <img src="https://img.shields.io/badge/macOS-14.2%2B-blue" alt="macOS 14.2+">
   <img src="https://img.shields.io/badge/Apple%20Silicon-arm64-lightgrey" alt="Apple Silicon">
 </p>
