@@ -1,0 +1,37 @@
+name: release
+
+# Pushing a `v*` tag produces a GitHub Release with the zipped Vadic.app and its checksum.
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write   # the release step creates the GitHub Release and uploads its assets
+
+jobs:
+  release:
+    runs-on: macos-26   # Xcode 26 / Swift 6.2; the runner is Apple Silicon, so the app is arm64
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false   # the release step authenticates with GH_TOKEN instead
+
+      - name: test
+        run: swift test
+
+      - name: build app
+        run: VERSION="${GITHUB_REF_NAME#v}" BUILD="${GITHUB_RUN_NUMBER}" ./scripts/build-app.sh
+
+      # ditto keeps the bundle's symlinks, extended attributes and signature intact; plain zip does not.
+      - name: package
+        run: |
+          mkdir dist
+          ditto -c -k --keepParent build/Vadic.app "dist/Vadic-${GITHUB_REF_NAME#v}-macos-arm64.zip"
+          (cd dist && shasum -a 256 *.zip > SHA256SUMS)
+
+      - name: create release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" dist/* --title "$GITHUB_REF_NAME" --generate-notes

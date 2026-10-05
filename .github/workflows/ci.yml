@@ -1,0 +1,31 @@
+name: build
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+permissions:
+  contents: read   # least privilege by default
+
+jobs:
+  build:
+    # Xcode 26 / Swift 6.2, the same toolchain as the dev machine.
+    runs-on: macos-26
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false  # don't leave a usable token in the workspace
+
+      - name: toolchain
+        run: swift --version
+
+      # Tests that need a real whisper-server or the network are skipped unless VADIC_IT=1.
+      - name: test
+        run: swift test
+
+      # Catches packaging and signing problems, not only compile errors.
+      - name: build app
+        run: ./scripts/build-app.sh
