@@ -16,14 +16,18 @@ cask "vadic" do
   homepage "https://github.com/mikhail-angelov/vadic"
 
   depends_on arch: :arm64
-  depends_on macos: ">= :sonoma"
   depends_on formula: "whisper-cpp"
+  depends_on macos: :sonoma
 
   app "Vadic.app"
 
   # Vadic isn't notarized, so Gatekeeper would refuse to open the quarantined download.
-  postflight do
-    system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{appdir}/Vadic.app"]
+  # Cleared on the staged copy, before Homebrew moves it to the Applications folder.
+  preflight_steps do
+    run "/usr/bin/xattr",
+        args:           ["-dr", "com.apple.quarantine", "Vadic.app"],
+        chdir:          ".",
+        writable_paths: ["Vadic.app"]
   end
 
   uninstall quit: "dev.vadic.Vadic"
