@@ -10,8 +10,8 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/mikhail-angelov/vadic-/actions/workflows/ci.yml"><img src="https://github.com/mikhail-angelov/vadic-/actions/workflows/ci.yml/badge.svg" alt="build"></a>
-  <a href="https://github.com/mikhail-angelov/vadic-/releases/latest"><img src="https://img.shields.io/github/v/release/mikhail-angelov/vadic-" alt="latest release"></a>
+  <a href="https://github.com/mikhail-angelov/vadic/actions/workflows/ci.yml"><img src="https://github.com/mikhail-angelov/vadic/actions/workflows/ci.yml/badge.svg" alt="build"></a>
+  <a href="https://github.com/mikhail-angelov/vadic/releases/latest"><img src="https://img.shields.io/github/v/release/mikhail-angelov/vadic" alt="latest release"></a>
   <img src="https://img.shields.io/badge/macOS-14.2%2B-blue" alt="macOS 14.2+">
   <img src="https://img.shields.io/badge/Apple%20Silicon-arm64-lightgrey" alt="Apple Silicon">
 </p>
@@ -34,7 +34,7 @@
    brew install whisper-cpp
    ```
 
-2. **Download Vadic.** Grab `Vadic-<version>-macos-arm64.zip` from the [latest release](https://github.com/mikhail-angelov/vadic-/releases/latest), unzip it and move `Vadic.app` to `/Applications`.
+2. **Download Vadic.** Grab `Vadic-<version>-macos-arm64.zip` from the [latest release](https://github.com/mikhail-angelov/vadic/releases/latest), unzip it and move `Vadic.app` to `/Applications`.
 
 3. **Allow it to open.** Vadic isn't notarized by Apple, so macOS blocks the first launch. Remove the quarantine flag once:
 
