@@ -97,8 +97,9 @@ VoiceInk is GPL-3.0: none of its code is copied in any form, only ideas.
 | R11 | First launch | If the Whisper and VAD models are missing from `Models/`, they are downloaded from HuggingFace with progress in the menu and the overlay; a file gets its final name only after its SHA-256 matches. A model VoiceInk already downloaded is used without downloading. Without `whisper-cpp` the error says `brew install whisper-cpp` |
 | R12 | Recognition quality | The recording is peak-normalized before recognition; the prompt is the style sentence + vocabulary; a space is appended after the inserted text (except in Return mode) |
 | R13 | Launch at login | On by default: the first launch registers the app through `SMAppService`. A **Launch at Login** menu item with a checkmark toggles it; the state lives in System Settings → Login Items, not in the config, and switching it off is never undone on the next launch |
+| R14 | Restart after upgrade | When its bundle is replaced (`brew upgrade`, a rebuild), Vadic restarts into the new version after its own process has exited; when the bundle is deleted (`brew uninstall`), it quits. The cask therefore has no `uninstall quit` |
 
-R1–R7 and R11–R13 are the first working version. R8–R10 are next steps, each with its own spec. R10: see `docs/SPEC-meetings.md`.
+R1–R7 and R11–R14 are the first working version. R8–R10 are next steps, each with its own spec. R10: see `docs/SPEC-meetings.md`.
 
 ---
 
@@ -115,6 +116,7 @@ Vadic.app  (NSStatusItem, activationPolicy .accessory: no Dock icon)
 ├── Muter         mutes system output while recording
 ├── StatusUI      state icons + menu
 ├── LaunchAtLogin login item through SMAppService
+├── BundleWatcher restart after an upgrade, quit after an uninstall
 ├── Overlay       NSPanel: borderless, floating, non-activating, ignores the mouse
 ├── Config        JSON in Application Support
 └── Store         history: audio.wav + text.txt + meta.json

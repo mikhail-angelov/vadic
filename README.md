@@ -32,10 +32,11 @@
 
 ```sh
 brew install --cask mikhail-angelov/tap/vadic
+open -a Vadic
 ```
 
-This installs `whisper-cpp` as well, puts Vadic in `/Applications` and clears the macOS quarantine flag, so it opens right away.
-Update with `brew upgrade --cask vadic`. `brew uninstall --cask vadic` removes the app; add `--zap` to delete the downloaded models, settings and history too.
+This installs `whisper-cpp` as well, puts Vadic in `/Applications` and clears the macOS quarantine flag. Homebrew can't start apps itself, so open Vadic once; from then on it starts with macOS.
+Update with `brew upgrade --cask vadic`: Vadic notices the new version and restarts into it. `brew uninstall --cask vadic` removes the app; add `--zap` to delete the downloaded models, settings and history too.
 
 ### Manual download
 

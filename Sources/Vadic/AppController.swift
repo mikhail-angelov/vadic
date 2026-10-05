@@ -6,6 +6,7 @@ final class AppController: NSObject, NSApplicationDelegate {
     private let paths = Paths.standard
     private let recorder = Recorder()
     private let muter = OutputMuter()
+    private let bundleWatcher = BundleWatcher()
     private let ui = StatusUI()
     private var overlay: Overlay?
     private var machine = DictationStateMachine()
@@ -40,6 +41,7 @@ final class AppController: NSObject, NSApplicationDelegate {
         }
 
         reload()
+        bundleWatcher.start()
         do { try LaunchAtLogin.enableOnFirstLaunch() } catch { ui.show(.error("launch at login: \(error.localizedDescription)")) }
         let store = HistoryStore(root: paths.history)
         let config = config!

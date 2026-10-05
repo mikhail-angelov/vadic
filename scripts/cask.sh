@@ -30,11 +30,17 @@ cask "vadic" do
         writable_paths: ["Vadic.app"]
   end
 
-  uninstall quit: "dev.vadic.Vadic"
+  # No "uninstall quit": Vadic watches its bundle and restarts itself after an upgrade, quits after an uninstall.
 
   zap trash: [
     "~/Library/Application Support/Vadic",
     "~/Library/Preferences/dev.vadic.Vadic.plist",
   ]
+
+  caveats <<~EOS
+    Start Vadic once to finish the setup:
+      open -a Vadic
+    It then adds itself to Login Items and starts with macOS; upgrades restart it automatically.
+  EOS
 end
 CASK
