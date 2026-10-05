@@ -28,27 +28,31 @@
 
 ## Install
 
-1. **Install whisper.cpp** with [Homebrew](https://brew.sh):
+### Homebrew (recommended)
 
-   ```sh
-   brew install whisper-cpp
-   ```
+```sh
+brew install --cask mikhail-angelov/tap/vadic
+```
 
-2. **Download Vadic.** Grab `Vadic-<version>-macos-arm64.zip` from the [latest release](https://github.com/mikhail-angelov/vadic/releases/latest), unzip it and move `Vadic.app` to `/Applications`.
+This installs `whisper-cpp` as well, puts Vadic in `/Applications` and clears the macOS quarantine flag, so it opens right away.
+Update with `brew upgrade --cask vadic`. `brew uninstall --cask vadic` removes the app; add `--zap` to delete the downloaded models, settings and history too.
 
-3. **Allow it to open.** Vadic isn't notarized by Apple, so macOS blocks the first launch. Remove the quarantine flag once:
+### Manual download
+
+1. Install whisper.cpp: `brew install whisper-cpp`.
+2. Grab `Vadic-<version>-macos-arm64.dmg` from the [latest release](https://github.com/mikhail-angelov/vadic/releases/latest), open it and drag **Vadic** onto **Applications**.
+3. Vadic isn't notarized by Apple, so macOS blocks the first launch. Remove the quarantine flag once:
 
    ```sh
    xattr -dr com.apple.quarantine /Applications/Vadic.app
    ```
 
-4. **Launch Vadic** and grant the two permissions it asks for:
+### First launch
+
+1. **Grant the two permissions** Vadic asks for, then restart it:
    - **Microphone**, to hear you;
    - **Accessibility**, to type the text into other apps (System Settings → Privacy & Security → Accessibility).
-
-   Restart Vadic after granting Accessibility.
-
-5. **Wait for the model.** On first launch Vadic downloads the speech model (574 MB) and the voice-activity model into `~/Library/Application Support/Vadic/Models` and checks their checksums. Progress shows in the menu and the overlay. If [VoiceInk](https://github.com/Beingpax/VoiceInk) has already downloaded `large-v3-turbo-q5_0`, Vadic reuses it.
+2. **Wait for the model.** Vadic downloads the speech model (574 MB) and the voice-activity model into `~/Library/Application Support/Vadic/Models` and checks their checksums; progress shows in the menu and the overlay. Models live outside the app, so reinstalling or upgrading never downloads them again. If [VoiceInk](https://github.com/Beingpax/VoiceInk) has already downloaded `large-v3-turbo-q5_0`, Vadic reuses it.
 
 ## Usage
 
@@ -63,7 +67,9 @@ Tips:
 - A recording stops by itself after 20 minutes and is transcribed as usual.
 - If typing fails, the text is left on the clipboard, so nothing you said is lost.
 
-The menu-bar icon shows the state: ready, transcribing, downloading or an error. Its menu has the last dictation, **Open Config**, **Reload Config**, **Open History** and **Quit Vadic**.
+The menu-bar icon shows the state: ready, transcribing, downloading or an error. Its menu has the last dictation, **Open Config**, **Reload Config**, **Open History**, **Launch at Login** and **Quit Vadic**.
+
+Vadic starts with macOS: on its first launch it adds itself to System Settings → General → Login Items. Uncheck **Launch at Login** in its menu, or switch it off in System Settings, and it stays off. Install Vadic in `/Applications` before the first launch (Homebrew does), so the login item points at its final location.
 
 ## Configuration
 
@@ -120,7 +126,7 @@ VADIC_IT=1 swift test       # plus tests against a real whisper-server and Huggi
 
 ## Releases
 
-CI runs on every push to `master`. Pushing a `v*` tag builds the app and publishes a GitHub Release with the zip and its SHA-256:
+CI runs on every push to `master`. Pushing a `v*` tag builds the app and publishes a GitHub Release with a DMG, a zip and their SHA-256 (`scripts/package.sh` does the packaging):
 
 ```sh
 git tag v0.1.0 && git push origin v0.1.0

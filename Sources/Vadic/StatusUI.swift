@@ -15,11 +15,13 @@ final class StatusUI: NSObject {
     var onReloadConfig: () -> Void = {}
     var onOpenHistory: () -> Void = {}
     var onPermissions: () -> Void = {}
+    var onToggleLaunchAtLogin: () -> Void = {}
 
     private let item = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
     private let stateLine = NSMenuItem()
     private let lastLine = NSMenuItem()
     private let permissionsItem = NSMenuItem()
+    private lazy var launchAtLoginItem = action("Launch at Login", #selector(toggleLaunchAtLogin))
     private var timer: Timer?
     /// When the overlay is on it shows the recording, and macOS adds its own mic indicator,
     /// so the menu-bar icon steps aside while recording. Without the overlay it shows a timer instead.
@@ -44,6 +46,7 @@ final class StatusUI: NSObject {
         menu.addItem(action("Open Config", #selector(openConfig)))
         menu.addItem(action("Reload Config", #selector(reloadConfig)))
         menu.addItem(action("Open History", #selector(openHistory)))
+        menu.addItem(launchAtLoginItem)
         menu.addItem(.separator())
         menu.addItem(NSMenuItem(title: "Quit Vadic", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
         item.menu = menu
@@ -121,6 +124,7 @@ final class StatusUI: NSObject {
     @objc private func reloadConfig() { onReloadConfig() }
     @objc private func openHistory() { onOpenHistory() }
     @objc private func permissions() { onPermissions() }
+    @objc private func toggleLaunchAtLogin() { onToggleLaunchAtLogin() }
 }
 
 extension StatusUI: NSMenuDelegate {
@@ -128,5 +132,6 @@ extension StatusUI: NSMenuDelegate {
         let missing = Permissions.missing
         permissionsItem.isHidden = missing.isEmpty
         permissionsItem.title = "Missing permission: " + missing.map(\.title).joined(separator: ", ") + "…"
+        launchAtLoginItem.state = LaunchAtLogin.isEnabled ? .on : .off
     }
 }

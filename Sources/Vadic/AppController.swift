@@ -35,8 +35,12 @@ final class AppController: NSObject, NSApplicationDelegate {
             NSWorkspace.shared.open(paths.history)
         }
         ui.onPermissions = { Permissions.explainMissing() }
+        ui.onToggleLaunchAtLogin = { [unowned self] in
+            do { try LaunchAtLogin.toggle() } catch { display(.error("launch at login: \(error.localizedDescription)")) }
+        }
 
         reload()
+        do { try LaunchAtLogin.enableOnFirstLaunch() } catch { ui.show(.error("launch at login: \(error.localizedDescription)")) }
         let store = HistoryStore(root: paths.history)
         let config = config!
         Task.detached { store.prune(audioDays: config.audioRetentionDays, historyDays: config.historyRetentionDays) }

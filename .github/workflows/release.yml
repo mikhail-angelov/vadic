@@ -1,6 +1,6 @@
 name: release
 
-# Pushing a `v*` tag produces a GitHub Release with the zipped Vadic.app and its checksum.
+# Pushing a `v*` tag produces a GitHub Release with Vadic.app as a DMG and a zip, plus their checksums.
 on:
   push:
     tags: ["v*"]
@@ -11,6 +11,9 @@ permissions:
 jobs:
   release:
     runs-on: macos-26   # Xcode 26 / Swift 6.2; the runner is Apple Silicon, so the app is arm64
+    env:
+      # Fine-grained token with contents: write on mikhail-angelov/homebrew-tap only.
+      HOMEBREW_TAP_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
 
     steps:
       - name: checkout
@@ -24,14 +27,24 @@ jobs:
       - name: build app
         run: VERSION="${GITHUB_REF_NAME#v}" BUILD="${GITHUB_RUN_NUMBER}" ./scripts/build-app.sh
 
-      # ditto keeps the bundle's symlinks, extended attributes and signature intact; plain zip does not.
       - name: package
-        run: |
-          mkdir dist
-          ditto -c -k --keepParent build/Vadic.app "dist/Vadic-${GITHUB_REF_NAME#v}-macos-arm64.zip"
-          (cd dist && shasum -a 256 *.zip > SHA256SUMS)
+        run: ./scripts/package.sh "${GITHUB_REF_NAME#v}"
 
       - name: create release
         env:
           GH_TOKEN: ${{ github.token }}
         run: gh release create "$GITHUB_REF_NAME" dist/* --title "$GITHUB_REF_NAME" --generate-notes
+
+      # Skipped until the HOMEBREW_TAP_TOKEN secret exists, so a release never fails on it.
+      - name: update homebrew cask
+        if: env.HOMEBREW_TAP_TOKEN != ''
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          sha256=$(awk '/\.zip$/ {print $1}' dist/SHA256SUMS)
+          git clone --depth 1 "https://x-access-token:${HOMEBREW_TAP_TOKEN}@github.com/mikhail-angelov/homebrew-tap.git" tap
+          ./scripts/cask.sh "$version" "$sha256" > tap/Casks/vadic.rb
+          cd tap
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -am "vadic $version"
+          git push
