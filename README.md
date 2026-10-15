@@ -133,6 +133,10 @@ CI runs on every push to `master`. Pushing a `v*` tag builds the app and publish
 git tag v0.1.0 && git push origin v0.1.0
 ```
 
+## See also
+
+[Beseda](https://github.com/mikhail-angelov/beseda) is built on the same local speech stack: talk to a coding agent by voice in the terminal, with on-device recognition (whisper.cpp or GigaAM) and speech synthesis (Silero). Vadic turns your voice into text in any app; Beseda turns it into a conversation.
+
 ## License
 
 [MIT](LICENSE)
